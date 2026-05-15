@@ -11,4 +11,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    allowedHosts: [
+      'all' // Agregas tu URL de ngrok aquí o dejar solo 'all'
+    ]
+  }
 })
