@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -9,13 +10,25 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Phone, Send } from "lucide-react"
+import { Phone, Send, RefreshCw } from "lucide-react"
 import { Link, useNavigate } from "react-router"
+import { sendMagicLink } from "@/api/auth"
 
 export const PhoneLoginPage = () => {
   const navigate = useNavigate()
   const [phone, setPhone] = useState("")
   const [error, setError] = useState("")
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: sendMagicLink,
+    onSuccess: (_, cleanPhone) => {
+      navigate(`./acceso/${cleanPhone}`)
+    },
+    onError: (error: Error) => {
+      console.log("Error al conectar:", error)
+      setError(error.message)
+    },
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,7 +41,7 @@ export const PhoneLoginPage = () => {
       return
     }
 
-    navigate(`./acceso/${cleanPhone}`)
+    mutate(cleanPhone)
   }
 
   return (
@@ -66,9 +79,18 @@ export const PhoneLoginPage = () => {
               {error && <p className="text-sm text-red-500">{error}</p>}
             </div>
 
-            <Button className="w-full" type="submit">
-              <Send className="mr-2 size-4" />
-              Enviar enlace de acceso
+            <Button className="w-full" type="submit" disabled={isPending}>
+              {isPending ? (
+                <>
+                  <RefreshCw className="mr-2 size-4 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 size-4" />
+                  Enviar enlace de acceso
+                </>
+              )}
             </Button>
           </form>
         </CardContent>
@@ -84,3 +106,4 @@ export const PhoneLoginPage = () => {
 }
 
 export default PhoneLoginPage
+
