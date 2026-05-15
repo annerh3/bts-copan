@@ -1,42 +1,54 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { ArrowLeft, CheckCircle2, RefreshCcw, XCircle, Eye } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
-import { getAllAbsentRequests } from "@/api/supa"
+import { getPermissionsPage } from "@/api/supa"
 
 export const AdminMainPage = () => {
-const [data, setData] = useState([
- {
-    id: 1,
-    parent_phone: "1234567890",
-    student_name: "Juan Perez",
-    student_id: "1234567890",
-    student_grade: "10mo Grado",
-  reason:"Enfermedad",
-  start_date:"2022-01-01",
-  end_date:"2022-01-01",
-  status:"Pendiente",
-  observations:"El estudiante presenta sintomas de gripe",
-created_at:"2022-01-01",
- },
- {
-  id: 2,
-    parent_phone: "1234567890",
-    student_name: "Juan Perez",
-    student_id: "1234567890",
-    student_grade: "10mo Grado",
-  reason:"Enfermedad",
-  start_date:"2022-01-01",
-  end_date:"2022-01-01",
-  status:"Pendiente",
-  observations:"El estudiante presenta sintomas de gripe",
-created_at:"2022-01-01",
- 
- }
+  const [data, setData] = useState([
+    {
+      id: 1,
+      parent_phone: "1234567890",
+      student_name: "Juan Perez",
+      student_id: "1234567890",
+      student_grade: "10mo Grado",
+      reason: "Enfermedad",
+      start_date: "2022-01-01",
+      end_date: "2022-01-01",
+      status: "Pendiente",
+      observations: "El estudiante presenta sintomas de gripe",
+      created_at: "2022-01-01",
+    },
+    {
+      id: 2,
+      parent_phone: "1234567890",
+      student_name: "Juan Perez",
+      student_id: "1234567890",
+      student_grade: "10mo Grado",
+      reason: "Enfermedad",
+      start_date: "2022-01-01",
+      end_date: "2022-01-01",
+      status: "Pendiente",
+      observations: "El estudiante presenta sintomas de gripe",
+      created_at: "2022-01-01",
+    },
   ])
   // Función para actualizar el estado de una solicitud
   const handleStatus = (id: number, newStatus: string) => {
@@ -46,7 +58,6 @@ created_at:"2022-01-01",
       )
     )
   }
-
 
   // Función para renderizar el badge de estado
   const renderStatusBadge = (status: string) => {
@@ -84,14 +95,30 @@ created_at:"2022-01-01",
   const navigate = useNavigate()
 
   useEffect(() => {
-    getAllAbsentRequests()
+ async function loadInitialData() {
+  const resultado = await getPermissionsPage({
+    p_page: 1,
+    p_per_page: 10,
+    p_status: null,
+    p_student_id: null,
+    p_order_by: "created_at",
+    p_order_dir: "desc",
+    p_parent_phone: null,
+  });
+
+  if (resultado) {
+    setData(resultado.items)
+    console.log("Datos cargados en estado:", resultado.items)
+  }
+}
+loadInitialData()
   }, [])
 
   return (
     <div className="flex h-full min-h-[80vh] w-full flex-col justify-center gap-6 px-4">
       <div className="space-y-2">
         <Button className="w-fit" variant="link" onClick={() => navigate("/")}>
-            <ArrowLeft className="h-4 w-4" /> Regresar
+          <ArrowLeft className="h-4 w-4" /> Regresar
         </Button>
         <h1 className="text-3xl font-extrabold tracking-tight">
           Dashboard del Consejero
@@ -100,8 +127,6 @@ created_at:"2022-01-01",
           Sistema de Permisos Escolares
         </p>
       </div>
-
- 
 
       <Card className="shadow-md">
         <div className="flex items-center justify-between p-4">
@@ -141,14 +166,17 @@ created_at:"2022-01-01",
                   >
                     <TableCell className="font-semibold">
                       {solicitud.student_name}
-                      <span className="block text-xs text-muted-foreground font-normal">
+                      <span className="block text-xs font-normal text-muted-foreground">
                         ID: {solicitud.student_id}
                       </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {solicitud.student_grade}
                     </TableCell>
-                    <TableCell className="max-w-[150px] truncate" title={solicitud.reason}>
+                    <TableCell
+                      className="max-w-[150px] truncate"
+                      title={solicitud.reason}
+                    >
                       {solicitud.reason}
                     </TableCell>
                     <TableCell className="text-sm">
@@ -156,10 +184,15 @@ created_at:"2022-01-01",
                     </TableCell>
                     <TableCell>{renderStatusBadge(solicitud.status)}</TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2 items-center">
+                      <div className="flex items-center justify-end gap-2">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button size="icon" variant="ghost" title="Ver detalles" className="h-8 w-8">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Ver detalles"
+                              className="h-8 w-8"
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
@@ -169,41 +202,72 @@ created_at:"2022-01-01",
                             </DialogHeader>
                             <div className="grid gap-4 py-4 text-sm">
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <span className="font-semibold col-span-1 text-right">Estudiante:</span>
-                                <span className="col-span-3">{solicitud.student_name} ({solicitud.student_grade})</span>
+                                <span className="col-span-1 text-right font-semibold">
+                                  Estudiante:
+                                </span>
+                                <span className="col-span-3">
+                                  {solicitud.student_name} (
+                                  {solicitud.student_grade})
+                                </span>
                               </div>
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <span className="font-semibold col-span-1 text-right">ID:</span>
-                                <span className="col-span-3">{solicitud.student_id}</span>
+                                <span className="col-span-1 text-right font-semibold">
+                                  ID:
+                                </span>
+                                <span className="col-span-3">
+                                  {solicitud.student_id}
+                                </span>
                               </div>
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <span className="font-semibold col-span-1 text-right">Teléfono:</span>
-                                <span className="col-span-3">{solicitud.parent_phone}</span>
+                                <span className="col-span-1 text-right font-semibold">
+                                  Teléfono:
+                                </span>
+                                <span className="col-span-3">
+                                  {solicitud.parent_phone}
+                                </span>
                               </div>
                               <div className="grid grid-cols-4 items-start gap-4">
-                                <span className="font-semibold col-span-1 text-right">Motivo:</span>
-                                <span className="col-span-3">{solicitud.reason}</span>
+                                <span className="col-span-1 text-right font-semibold">
+                                  Motivo:
+                                </span>
+                                <span className="col-span-3">
+                                  {solicitud.reason}
+                                </span>
                               </div>
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <span className="font-semibold col-span-1 text-right">Fechas:</span>
-                                <span className="col-span-3">{solicitud.start_date} al {solicitud.end_date}</span>
+                                <span className="col-span-1 text-right font-semibold">
+                                  Fechas:
+                                </span>
+                                <span className="col-span-3">
+                                  {solicitud.start_date} al {solicitud.end_date}
+                                </span>
                               </div>
                               <div className="grid grid-cols-4 items-start gap-4">
-                                <span className="font-semibold col-span-1 text-right">Notas:</span>
-                                <span className="col-span-3 whitespace-pre-wrap">{solicitud.observations || "Ninguna"}</span>
+                                <span className="col-span-1 text-right font-semibold">
+                                  Notas:
+                                </span>
+                                <span className="col-span-3 whitespace-pre-wrap">
+                                  {solicitud.observations || "Ninguna"}
+                                </span>
                               </div>
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <span className="font-semibold col-span-1 text-right">Estado:</span>
-                                <span className="col-span-3">{renderStatusBadge(solicitud.status)}</span>
+                                <span className="col-span-1 text-right font-semibold">
+                                  Estado:
+                                </span>
+                                <span className="col-span-3">
+                                  {renderStatusBadge(solicitud.status)}
+                                </span>
                               </div>
                             </div>
                             {solicitud.status === "Pendiente" && (
-                              <div className="flex justify-end gap-2 mt-4 border-t pt-4">
+                              <div className="mt-4 flex justify-end gap-2 border-t pt-4">
                                 <Button
                                   size="sm"
                                   variant="outline"
                                   className="gap-1 border-green-200 text-green-600 hover:bg-green-50 hover:text-green-700"
-                                  onClick={() => handleStatus(solicitud.id, "Aprobado")}
+                                  onClick={() =>
+                                    handleStatus(solicitud.id, "Aprobado")
+                                  }
                                 >
                                   <CheckCircle2 className="h-4 w-4" /> Aprobar
                                 </Button>
@@ -211,7 +275,9 @@ created_at:"2022-01-01",
                                   size="sm"
                                   variant="outline"
                                   className="gap-1 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-                                  onClick={() => handleStatus(solicitud.id, "Rechazado")}
+                                  onClick={() =>
+                                    handleStatus(solicitud.id, "Rechazado")
+                                  }
                                 >
                                   <XCircle className="h-4 w-4" /> Rechazar
                                 </Button>
@@ -219,8 +285,6 @@ created_at:"2022-01-01",
                             )}
                           </DialogContent>
                         </Dialog>
-
-                       
                       </div>
                     </TableCell>
                   </TableRow>
