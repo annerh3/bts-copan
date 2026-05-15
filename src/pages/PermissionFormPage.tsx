@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { CheckCircle2, Send, RefreshCw, AlertCircle, Clock } from 'lucide-react'
+import { validateToken } from '@/api/auth'
 
 export const PermissionFormPage = () => {
   const { tokenId: token } = useParams()
-  
-  // Mock data
-  const parentName = 'Juan Pérez'
-  const studentName = 'Juanito Pérez'
   
   // View states
   const [viewState, setViewState] = useState<'form' | 'status'>('form')
@@ -28,21 +26,22 @@ export const PermissionFormPage = () => {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
-  // Simular validación de solicitud existente
+  // Validar token desde el backend
+  const { data: authData, isLoading, isError } = useQuery({
+    queryKey: ['validateToken', token],
+    queryFn: () => validateToken(token!),
+    enabled: !!token,
+    retry: false,
+  })
+
   useEffect(() => {
-    // Si el número es uno específico, simulamos que ya tiene solicitud
-    if (token === '99345673') {
-      setPermission({
-        status: 'Pendiente',
-        studentName: studentName,
-        date: '2026-05-20 al 2026-05-22',
-        reason: 'Viaje familiar'
-      })
-      setViewState('status')
-    } else {
-      setViewState('form')
+    if (authData?.initialData?.student_grade && !studentGrade) {
+      setStudentGrade(authData.initialData.student_grade)
     }
-  }, [token])
+  }, [authData, studentGrade])
+
+  const parentName = authData?.initialData?.parent_name || ''
+  const studentName = authData?.initialData?.student_name || ''
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -93,6 +92,45 @@ export const PermissionFormPage = () => {
   const handleRefresh = () => {
     // Aquí se refrescaría el estado desde el backend
     console.log("Refrescando estado...")
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <RefreshCw className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground font-medium">Validando acceso...</p>
+      </div>
+    )
+  }
+
+  if (isError || (authData && !authData.access)) {
+    return (
+      <div className="w-full max-w-md mx-auto mt-8 space-y-6">
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-destructive">Acceso Denegado</CardTitle>
+            <CardDescription>
+              El enlace no es válido o ha expirado
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center space-y-4">
+            <div className="rounded-full bg-red-100 p-3">
+              <AlertCircle className="h-8 w-8 text-destructive" />
+            </div>
+            <p className="text-center text-sm text-muted-foreground">
+              Por favor, solicite un nuevo enlace de acceso desde el portal de padres.
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = '/'} 
+              className="mt-4 w-full"
+            >
+              Ir al inicio
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   if (viewState === 'status' && permission) {
@@ -199,7 +237,7 @@ export const PermissionFormPage = () => {
                   placeholder="Ej: 8vo Grado"
                   value={studentGrade}
                   onChange={(e) => setStudentGrade(e.target.value)}
-                  required
+                  disabled className="bg-muted" 
                 />
               </div>
 

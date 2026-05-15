@@ -20,3 +20,24 @@ export const sendMagicLink = async (phone: string) => {
     throw new Error(errorMessage);
   }
 };
+
+export interface ValidateAccessResponse {
+  access: boolean;
+  initialData?: {
+    id: string;
+    student_name: string;
+    student_grade: string;
+    parent_name: string;
+  };
+  message?: string;
+}
+
+export const validateToken = async (token: string): Promise<ValidateAccessResponse> => {
+  try {
+    const response = await apiClient.post(`/validate-access/${token}`);
+    return response.data;
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Token no válido o expirado.';
+    throw new Error(errorMessage);
+  }
+};
