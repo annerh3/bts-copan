@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router"
 import PhoneLoginPage from "./pages/PhoneLoginPage"
 import { PermissionFormPage } from "./pages/PermissionFormPage"
+import { AdminMainPage } from "./pages/AdminMainPage"
 
 export function App() {
   return (
@@ -8,6 +9,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<PhoneLoginPage />} />
         <Route path="/acceso/:tokenId" element={<PermissionFormPage />} />
+        <Route path="/admin" element={<AdminMainPage />} />
       </Routes>
     </main>
   )
