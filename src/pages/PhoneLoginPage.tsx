@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -9,8 +10,27 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Phone, Send } from "lucide-react"
+import { Link, useNavigate } from "react-router"
 
 export const PhoneLoginPage = () => {
+  const navigate = useNavigate()
+  const [phone, setPhone] = useState("")
+  const [error, setError] = useState("")
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+
+    const cleanPhone = phone.replace(/\D/g, "")
+    
+    if (!cleanPhone || cleanPhone.length < 8) {
+      setError("Ingrese un número de teléfono válido (mínimo 8 dígitos)")
+      return
+    }
+
+    navigate(`./acceso/${cleanPhone}`)
+  }
+
   return (
     <div className="w-full max-w-md space-y-6">
       <div className="mb-8 text-center">
@@ -27,32 +47,37 @@ export const PhoneLoginPage = () => {
             Ingrese su número de teléfono para recibir su enlace de acceso
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="phone">Número de Teléfono</Label>
-            <div className="relative">
-              <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="9934-9694"
-                className="pl-10"
-                defaultValue=""
-              />
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">Número de Teléfono</Label>
+              <div className="relative">
+                <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="9934-9694"
+                  className="pl-10"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <p className="text-sm text-red-500">{error}</p>}
             </div>
-          </div>
 
-          <Button className="w-full" type="button">
-            <Send className="mr-2 size-4" />
-            Enviar enlace de acceso
-          </Button>
+            <Button className="w-full" type="submit">
+              <Send className="mr-2 size-4" />
+              Enviar enlace de acceso
+            </Button>
+          </form>
         </CardContent>
       </Card>
 
       <div className="text-center">
-        <Button variant="ghost" size="sm" className="text-muted-foreground">
+        <Link to="/admin" className="text-muted-foreground text-sm hover:underline">
           Acceso Consejería
-        </Button>
+        </Link>
       </div>
     </div>
   )
