@@ -1,4 +1,4 @@
-### BTS Copán — Sistema de Permisos Escolares
+# BTS Copán — Sistema de Permisos Escolares
 
 Prototipo desarrollado durante el hackathon Build To Solve, construido en aproximadamente 2 horas.
 
