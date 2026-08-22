@@ -1,10 +1,10 @@
-BTS Copán — Sistema de Permisos Escolares
+### BTS Copán — Sistema de Permisos Escolares
 
 Prototipo desarrollado durante el hackathon Build To Solve, construido en aproximadamente 2 horas.
 
 La idea del proyecto es digitalizar el proceso de solicitud y gestión de permisos escolares entre padres de familia y la consejería de un centro educativo.
 
-¿Qué logramos construir?
+## ¿Qué logramos construir?
 
 Durante el hackathon desarrollamos un flujo funcional que permite:
 
@@ -16,7 +16,8 @@ Durante el hackathon desarrollamos un flujo funcional que permite:
 - Visualizar las solicitudes desde un dashboard para consejería.
 - Consultar información almacenada en Supabase.
 
-Flujo planteado
+## Flujo planteado
+```
 
 Padre de familia
       │
@@ -34,8 +35,9 @@ Consejería revisa la solicitud
       │
       ├── Aprobar
       └── Rechazar
+```
 
-Estado del proyecto
+## Estado del proyecto
 
 Este repositorio contiene el prototipo alcanzado durante el tiempo del hackathon, por lo que algunas funcionalidades quedaron simuladas o incompletas.
 
@@ -46,7 +48,7 @@ Por ejemplo:
 - El dashboard administrativo todavía no cuenta con autenticación.
 - Faltan algunos flujos y validaciones para convertirlo en una aplicación lista para producción.
 
-Tecnologías
+## Tecnologías
 
 - React
 - TypeScript
@@ -57,6 +59,6 @@ Tecnologías
 - shadcn/ui
 - Tailwind CSS
 
-Contexto
+## Contexto
 
 El objetivo durante Build To Solve fue validar rápidamente la idea y construir la mayor parte posible del flujo principal dentro del tiempo disponible, priorizando un prototipo demostrable sobre una implementación completa.
