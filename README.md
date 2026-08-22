@@ -1,21 +1,62 @@
-# React + TypeScript + Vite + shadcn/ui
+BTS Copán — Sistema de Permisos Escolares
 
-This is a template for a new Vite project with React, TypeScript, and shadcn/ui.
+Prototipo desarrollado durante el hackathon Build To Solve, construido en aproximadamente 2 horas.
 
-## Adding components
+La idea del proyecto es digitalizar el proceso de solicitud y gestión de permisos escolares entre padres de familia y la consejería de un centro educativo.
 
-To add components to your app, run the following command:
+¿Qué logramos construir?
 
-```bash
-npx shadcn@latest add button
-```
+Durante el hackathon desarrollamos un flujo funcional que permite:
 
-This will place the ui components in the `src/components` directory.
+- Ingresar un número de teléfono desde el portal de padres.
+- Generar un enlace de acceso asociado al padre y estudiante.
+- Validar el acceso mediante un token.
+- Mostrar un formulario para solicitar un permiso escolar.
+- Consultar el estado de la solicitud.
+- Visualizar las solicitudes desde un dashboard para consejería.
+- Consultar información almacenada en Supabase.
 
-## Using components
+Flujo planteado
 
-To use the components in your app, import them as follows:
+Padre de familia
+      │
+      ▼
+Ingresa su teléfono
+      │
+      ▼
+Recibe enlace de acceso
+      │
+      ▼
+Completa solicitud de permiso
+      │
+      ▼
+Consejería revisa la solicitud
+      │
+      ├── Aprobar
+      └── Rechazar
 
-```tsx
-import { Button } from "@/components/ui/button"
-```
+Estado del proyecto
+
+Este repositorio contiene el prototipo alcanzado durante el tiempo del hackathon, por lo que algunas funcionalidades quedaron simuladas o incompletas.
+
+Por ejemplo:
+
+- El formulario de solicitud aún no guarda el permiso en la base de datos.
+- Aprobar o rechazar una solicitud actualmente solo modifica el estado en el cliente.
+- El dashboard administrativo todavía no cuenta con autenticación.
+- Faltan algunos flujos y validaciones para convertirlo en una aplicación lista para producción.
+
+Tecnologías
+
+- React
+- TypeScript
+- Vite
+- Supabase
+- Supabase Edge Functions
+- TanStack Query
+- shadcn/ui
+- Tailwind CSS
+
+Contexto
+
+El objetivo durante Build To Solve fue validar rápidamente la idea y construir la mayor parte posible del flujo principal dentro del tiempo disponible, priorizando un prototipo demostrable sobre una implementación completa.
